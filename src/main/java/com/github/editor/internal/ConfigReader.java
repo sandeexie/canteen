@@ -9,7 +9,7 @@ public class ConfigReader {
 
 	private ConfigReader() { }
 
-	public Object get(String key,String defaultValue){
+	public String get(String key,String defaultValue){
 		String value=System.getProperty(key);
 		return null==value?defaultValue:value;
 	}

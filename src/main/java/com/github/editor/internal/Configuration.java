@@ -32,7 +32,13 @@ public class Configuration {
 	// 是否使用连接池
 	public static final String CONNECT_POOL_ENABLED="connect.pool.enabled";
 
+	// 执行端端口
+	public static final String EXECUTE_PORT="execute.port";
+
 	/*================================================================*/
+
+	// 默认执行端口号
+	public static final String DEFAULT_EXECUTE_PORT="5488";
 
 	// 默认开启连接池
 	public static final boolean DEFALUR_CONNECT_POOL_ENABLED=true;
