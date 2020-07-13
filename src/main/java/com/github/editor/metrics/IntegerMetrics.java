@@ -1,0 +1,56 @@
+package com.github.editor.metrics;
+
+import com.github.editor.client.Client;
+import com.github.editor.internal.Configuration;
+import com.github.editor.rpc.RPCClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+
+public class IntegerMetrics extends Metrics {
+
+	private static final Logger logger= LoggerFactory.getLogger(IntegerMetrics.class);
+
+	private Map<String,AtomicInteger> metrics=new ConcurrentHashMap<String, AtomicInteger>();
+
+	public boolean updateMetrics(String name, Number delta) {
+		try {
+			this.metrics.get(name).getAndAdd((Integer) delta);
+			return true;
+		}catch (Exception e){
+			String msg="Metrics was update on failure," +
+					"because conversion between Integer and " +
+					"Number executed unsuccessfully";
+			logger.error(msg);
+			// TODO 之后处理
+			this.send(msg,"localhost",5488);
+			return false;
+		}
+	}
+
+	public Number getMetricsValue(String name) {
+		Integer value=this.metrics.get(name).get();
+		if(value==null)
+			logger.warn("Metrics of "+name+" is empty!!!");
+		return value;
+	}
+
+	public boolean clearMetrics() {
+		this.metrics.clear();
+		return true;
+	}
+
+	public boolean send(Object event,String host,Integer port) {
+		if(host== "localhost" || host=="127.0.0.1"){
+			return true;
+		} else{
+			// TODO 这里需要通过RPC端口进行连接
+			Client client=new Client(host,port);
+			RPCClient rpcClient = new RPCClient();
+			return rpcClient.remoteExecute(host,port,null);
+		}
+	}
+}
