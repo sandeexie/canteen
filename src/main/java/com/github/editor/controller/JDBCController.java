@@ -2,6 +2,8 @@ package com.github.editor.controller;
 
 import com.github.editor.handler.*;
 import com.github.editor.internal.ConfigReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,9 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Controller
-public class SQLController {
+public class JDBCController {
 
-	public static final ConfigReader configReader=ConfigReader.getInstance();
+	private static final ConfigReader configReader=ConfigReader.getInstance();
+
+	private static final Logger logger= LoggerFactory.getLogger(JDBCController.class);
 
 	@Autowired
 	MySQLHandler mySQLHandler;
