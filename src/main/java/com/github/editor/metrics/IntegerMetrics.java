@@ -43,7 +43,7 @@ public class IntegerMetrics extends Metrics {
 		return true;
 	}
 
-	public boolean send(Object event,String host,Integer port) {
+	public Object send(Object event,String host,Integer port) {
 		if(host== "localhost" || host=="127.0.0.1"){
 			return true;
 		} else{

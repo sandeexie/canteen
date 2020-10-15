@@ -35,13 +35,19 @@ public class Configuration {
 	// 执行端端口
 	public static final String EXECUTE_PORT="execute.port";
 
+	// RPC最大连接次数
+	public static final String MAX_RPC_CONNECTION_TIMES="max.rpc.connection.times";
+
 	/*================================================================*/
+
+	// RPC默认最大连接次数
+	public static final int DEFAULT_MAX_RPC_CONNECTION_TIMES=50;
 
 	// 默认执行端口号
 	public static final String DEFAULT_EXECUTE_PORT="5488";
 
 	// 默认开启连接池
-	public static final boolean DEFALUR_CONNECT_POOL_ENABLED=true;
+	public static final boolean DEFALUT_CONNECT_POOL_ENABLED=true;
 
 	// 默认持久化存储开启
 	public static final boolean DEFALUT_PERSISTENCE_ENABLED=true;

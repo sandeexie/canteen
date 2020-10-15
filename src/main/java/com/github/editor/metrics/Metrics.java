@@ -20,5 +20,5 @@ public abstract class Metrics {
 	public abstract boolean clearMetrics();
 
 	// 向远端发送消息
-	public abstract boolean send(Object event,String host,Integer port);
+	public abstract Object send(Object event,String host,Integer port);
 }
