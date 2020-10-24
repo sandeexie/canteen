@@ -15,7 +15,7 @@ public class Client {
 	private Integer port;
 
 	public Client(){
-		ConfigReader reader = ConfigReader.getInstance();
+		ConfigReader reader = ConfigReader.getReader();
 		this.hostname="localhost";
 		try {
 			this.port= Integer.parseInt(

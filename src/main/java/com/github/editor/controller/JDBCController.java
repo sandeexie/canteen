@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Controller
 public class JDBCController {
 
-	private static final ConfigReader configReader=ConfigReader.getInstance();
+	private static final ConfigReader configReader=ConfigReader.getReader();
 
 	private static final Logger logger= LoggerFactory.getLogger(JDBCController.class);
 

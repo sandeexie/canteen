@@ -56,7 +56,6 @@ public class RPCClient<T> {
 			logger.error("Can not create http client with "+addr);
 		}
 
-
 		return null;
 	}
 

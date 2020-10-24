@@ -1,10 +1,10 @@
 package com.github.editor.internal;
 
 public class ConfigReader {
-	private static ConfigReader ourInstance = new ConfigReader();
+	private static ConfigReader reader = new ConfigReader();
 
-	public static ConfigReader getInstance() {
-		return ourInstance;
+	public static ConfigReader getReader() {
+		return reader;
 	}
 
 	private ConfigReader() { }
