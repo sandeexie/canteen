@@ -1,6 +1,7 @@
 package com.github.editor.log;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.impl.StaticLoggerBinder;
@@ -86,27 +87,69 @@ public class Logging {
 		initLogIfNeccessary(isInterpreter,false);
 	}
 
-	private void initLogIfNeccessary(Boolean isInterpreter,Boolean silent){
-
+	/**
+	 * 日志初始化工作
+	 * @param isInterpreter 是否被其他终端所中断
+	 * @param silent 是否开启静默模式
+	 */
+	private boolean initLogIfNeccessary(Boolean isInterpreter,Boolean silent){
+		if(!InnerLogging.initilized){
+			synchronized (InnerLogging.lock){
+				if(!InnerLogging.initilized){
+					initializeLogging(isInterpreter,silent);
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	private void initLogForcefully(Boolean isInterpreter, Boolean silent){
-
+		initializeLogging(isInterpreter,silent);
 	}
 
 	private void initializeLogging(Boolean isInterpreter,Boolean silent){
+		org.apache.logging.log4j.Logger rootLogger = LogManager.getRootLogger();
 
+		// TODO 处理log4j 1.2初始化问题
+
+		if(InnerLogging.defaultRootLevelName==null){
+			InnerLogging.defaultRootLevelName=rootLogger.getLevel();
+		}
+		/**
+		 * 对于使用shell指令的扩展,当使用shell指令对默认日志等级进行覆盖的时候进行适配
+		 * TODO 对shell输入的指令进行适配
+		 */
+		if(isInterpreter){
+			org.apache.logging.log4j.Logger replLogger = LogManager.getLogger(getLoggerName());
+			Level replLevel=replLogger.getLevel()==null?Level.WARN:replLogger.getLevel();
+			if(!replLevel.name().equals(replLogger.getLevel().name())){
+				// 解决默认日志等级缺省
+				if(!silent){
+					System.err.println(
+							"There exist a difference between default " +
+									"log level and level from shell."
+					);
+					System.err.println("Using Default Log Level to "+replLevel.name());
+				}
+				InnerLogging.shellThresholdLevel=replLevel;
+			}
+			InnerLogging.initilized=true;
+		}
 	}
 
 	static class InnerLogging {
 
-		private volatile boolean initilized=false;
+		private static volatile boolean initilized=false;
 
-		private volatile Level defaultRootLevelName=null;
+		private static volatile Level defaultRootLevelName=null;
 
-		private volatile boolean defaultLog4j=false;
+		private static volatile boolean defaultLog4j=false;
 
-		private Object lock=new Object();
+		// TODO: 2020/10/27 控制shell命令日志等级的参数
+		private static volatile Level shellThresholdLevel=null;
+
+		private static Object lock=new Object();
 
 		private static InnerLogging innerLogging = new InnerLogging();
 
@@ -156,7 +199,8 @@ public class Logging {
 						defaultRootLevelName=null;
 					}
 				}
-				this.initilized=false;
+				initilized=false;
+				shellThresholdLevel=null;
 			}
 		}
 	}
