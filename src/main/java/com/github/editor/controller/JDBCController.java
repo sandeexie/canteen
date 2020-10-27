@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * TODO 替换掉Spring系列对HTTP C/S模式的支持,这里支持HTTP请求即可,暂时不考虑HTTPS
+ */
 @RestController
 @Controller
 public class JDBCController {

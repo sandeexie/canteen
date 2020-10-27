@@ -61,7 +61,7 @@ public abstract class JDBCHandler implements ResolveHandler {
 	}
 
 	/**
-	 * 执行前检查，防止SQL注入以及XSS跨站攻击
+	 * 执行前检查,防止网络攻击
 	 * @return
 	 */
 	public abstract boolean preInspect();

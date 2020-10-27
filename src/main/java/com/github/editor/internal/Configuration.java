@@ -38,6 +38,12 @@ public class Configuration {
 	// RPC最大连接次数
 	public static final String MAX_RPC_CONNECTION_TIMES="max.rpc.connection.times";
 
+	// 是否使用连接池
+	public static final String ENABLE_CONNECTION_POOL="connection.pool.enabled";
+
+	// 连接池大小参数
+	public static final String CONNETION_POOL_SIZE="connection.pool.size";
+
 	/*================================================================*/
 
 	// RPC默认最大连接次数
@@ -65,8 +71,14 @@ public class Configuration {
 	public static final long DEFAULT_EXECUTE_DEADLINE=Long.MAX_VALUE-8;
 
 	// 默认重试次数
-	public static final int DEFAULT_MAX_RETRY_TIMES=3;
+	public static final int DEFAULT_MAX_RETRY_TIMES=6;
 
 	// 默认等待时间
 	public static final int DEFAULT_WAIT_MILLSECONDS=15000;
+
+	// 默认启动连接池
+	public static final boolean DEFAULT_CONNECTION_POOL_ENABLED=true;
+
+	// 默认连接池大小
+	public static final int DEAFAULT_CONNETION_POOL_SIZE=100;
 }
