@@ -53,6 +53,10 @@ public class UserGroup {
 		this.userGroupName=userGroupName;
 	}
 
+	public Tuple getOperations(){
+		return this.operations;
+	}
+
 	private void setOperations(){
 		synchronized (lock){
 			switch (role){
@@ -82,8 +86,7 @@ public class UserGroup {
 									Operation.QUERY
 							);
 				case VIEWER:
-					this.operations=
-							new Tuple1(Operation.QUERY);
+					this.operations=new Tuple1(Operation.QUERY);
 				case NONE:
 					this.operations=new Tuple0();
 			}
