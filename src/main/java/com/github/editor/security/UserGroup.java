@@ -1,6 +1,6 @@
 package com.github.editor.security;
 
-import java.util.Set;
+import com.github.editor.utils.collections.*;
 
 /**
  * 用户组
@@ -12,7 +12,7 @@ public class UserGroup {
 	private String userGroupName;
 
 	// 用户组操作权限
-	private Set<Operation> operations;
+	private Tuple operations;
 
 	private volatile Object lock;
 
@@ -53,14 +53,41 @@ public class UserGroup {
 		this.userGroupName=userGroupName;
 	}
 
-	private boolean setOperations(){
+	private void setOperations(){
 		synchronized (lock){
 			switch (role){
 				case ADMIN:
-					this.operations= null;
+					this.operations=
+							new Tuple6(
+									Operation.ADD,
+									Operation.DELETE,
+									Operation.RESTART,
+									Operation.QUERY,
+									Operation.REGISTE,
+									Operation.SHUTDOWN
+							);
+				case DEVELOP:
+					this.operations=
+							new Tuple4(
+								Operation.ADD,
+								Operation.DELETE,
+								Operation.QUERY,
+								Operation.RESTART
+							);
+				case ANALYSIS:
+					this.operations=
+							new Tuple3(
+									Operation.ADD,
+									Operation.DELETE,
+									Operation.QUERY
+							);
+				case VIEWER:
+					this.operations=
+							new Tuple1(Operation.QUERY);
+				case NONE:
+					this.operations=new Tuple0();
 			}
 		}
-		return true;
 	}
 
 
