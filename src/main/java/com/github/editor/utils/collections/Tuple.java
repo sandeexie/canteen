@@ -1,5 +1,7 @@
 package com.github.editor.utils.collections;
 
+import com.github.editor.exception.TrupleOutOfIndexException;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
@@ -57,5 +59,12 @@ public abstract class Tuple {
 
 	public Object[] toArray(){
 		return this.values.toArray();
+	}
+
+	public Object get(int index){
+		if(index<0 || index>this.size())
+			throw new TrupleOutOfIndexException("Inputed truple is illegal");
+		else
+			return this.values.indexOf(index);
 	}
 }
