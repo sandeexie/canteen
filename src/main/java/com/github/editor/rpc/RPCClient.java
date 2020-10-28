@@ -5,7 +5,6 @@ import com.github.editor.internal.Configuration;
 import com.github.editor.rpc.message.CompressedCodec;
 import com.github.editor.rpc.message.RPCMessage;
 import com.sun.net.httpserver.HttpServer;
-import com.sun.net.httpserver.HttpsServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sun.net.www.http.HttpClient;
@@ -25,7 +24,7 @@ public class RPCClient<T> {
 
 	private final String prefix="http://";
 
-	private ConfigReader configReader=ConfigReader.getInstance();
+	private ConfigReader configReader=ConfigReader.getReader();
 
 	private int rpcConnectionNumber=Integer.parseInt(
 			configReader.get(
