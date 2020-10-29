@@ -1,5 +1,6 @@
 package com.github.editor.security;
 
+import com.github.editor.log.Logging;
 import com.github.editor.utils.collections.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +11,7 @@ import java.util.Set;
 /**
  * 用户权限
  */
-public class UserAuth {
+public class UserAuth extends Logging {
 
 	public static final Logger logger= LoggerFactory.getLogger(UserAuth.class);
 

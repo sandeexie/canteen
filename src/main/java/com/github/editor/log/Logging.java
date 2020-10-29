@@ -26,7 +26,7 @@ public class Logging {
 		return this.getClass().getName();
 	}
 
-	private Logger getLogger(){
+	public Logger getLogger(){
 		if(logger==null){
 			initLogIfNeccessary(false);
 			logger=LoggerFactory.getLogger(getLoggerName());
@@ -37,53 +37,53 @@ public class Logging {
 	///////////////////////////////////////////////////////////////////////////
 	// 信息打印
 	///////////////////////////////////////////////////////////////////////////
-	private void logInfo(String msg){
+	public void logInfo(String msg){
 		if(logger.isInfoEnabled()) logger.info(msg);
 	}
 
-	private void logDebug(String msg){
+	public void logDebug(String msg){
 		if(logger.isDebugEnabled()) logger.debug(msg);
 	}
 
-	private void logTrace(String msg){
+	public void logTrace(String msg){
 		if(logger.isTraceEnabled()) logger.trace(msg);
 	}
 
-	private void logError(String msg){
+	public void logError(String msg){
 		if(logger.isErrorEnabled()) logger.error(msg);
 	}
 
-	private void logWarning(String msg){
+	public void logWarning(String msg){
 		if(logger.isWarnEnabled()) logger.warn(msg);
 	}
 
 	///////////////////////////////////////////////////////////////////////////
 	// 信息打印,可接受异常
 	///////////////////////////////////////////////////////////////////////////
-	private void logInfo(String msg,Throwable throwable){
+	public void logInfo(String msg,Throwable throwable){
 		if(logger.isInfoEnabled()) logger.info(msg,throwable);
 	}
 
-	private void logDebug(String msg,Throwable throwable){
+	public void logDebug(String msg,Throwable throwable){
 		if(logger.isDebugEnabled()) logger.debug(msg,throwable);
 	}
 
-	private void logTrace(String msg,Throwable throwable){
+	public void logTrace(String msg,Throwable throwable){
 		if(logger.isTraceEnabled()) logger.trace(msg,throwable);
 	}
 
-	private void logError(String msg,Throwable throwable){
+	public void logError(String msg,Throwable throwable){
 		if(logger.isErrorEnabled()) logger.error(msg,throwable);
 	}
 
-	private void logWarning(String msg,Throwable throwable){
+	public void logWarning(String msg,Throwable throwable){
 		if(logger.isWarnEnabled()) logger.warn(msg,throwable);
 	}
 
 	///////////////////////////////////////////////////////////////////////////
 	// 初始化工具
 	///////////////////////////////////////////////////////////////////////////
-	private void initLogIfNeccessary(Boolean isInterpreter){
+	public void initLogIfNeccessary(Boolean isInterpreter){
 		initLogIfNeccessary(isInterpreter,false);
 	}
 
@@ -92,7 +92,7 @@ public class Logging {
 	 * @param isInterpreter 是否被其他终端所中断
 	 * @param silent 是否开启静默模式
 	 */
-	private boolean initLogIfNeccessary(Boolean isInterpreter,Boolean silent){
+	public boolean initLogIfNeccessary(Boolean isInterpreter,Boolean silent){
 		if(!InnerLogging.initilized){
 			synchronized (InnerLogging.lock){
 				if(!InnerLogging.initilized){
@@ -104,11 +104,11 @@ public class Logging {
 		return false;
 	}
 
-	private void initLogForcefully(Boolean isInterpreter, Boolean silent){
+	public void initLogForcefully(Boolean isInterpreter, Boolean silent){
 		initializeLogging(isInterpreter,silent);
 	}
 
-	private void initializeLogging(Boolean isInterpreter,Boolean silent){
+	public void initializeLogging(Boolean isInterpreter,Boolean silent){
 		org.apache.logging.log4j.Logger rootLogger = LogManager.getRootLogger();
 
 		// TODO 处理log4j 1.2初始化问题
