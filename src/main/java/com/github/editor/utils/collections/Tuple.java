@@ -25,7 +25,7 @@ public abstract class Tuple {
 		this.values.forEach(consumer);
 	}
 
-	private int size(){
+	public int size(){
 		if(null==this.values) return 0;
 		return this.values.size();
 	}
