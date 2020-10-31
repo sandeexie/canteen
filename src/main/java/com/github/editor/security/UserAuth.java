@@ -1,17 +1,17 @@
 package com.github.editor.security;
 
-import com.github.editor.log.Logging;
 import com.github.editor.utils.collections.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 /**
  * 用户权限
  */
-public class UserAuth extends Logging {
+public class UserAuth {
 
 	public static final Logger logger= LoggerFactory.getLogger(UserAuth.class);
 
@@ -24,7 +24,7 @@ public class UserAuth extends Logging {
 	private List<Operation> acls;
 
 	// 用户最终权限表
-	private Set<Operation> finalAccess;
+	public Set<Operation> finalAccess=new HashSet<>();
 
 	public UserAuth(String username){
 		this.username=username;
@@ -42,17 +42,23 @@ public class UserAuth extends Logging {
 		this.acls=acls;
 	}
 
-	private void caculate(){
+	public void caculate(){
 
-		for (Operation operation:acls) {
-			finalAccess.add(operation);
+		if(null!=acls){
+			for (Operation operation:acls) {
+				this.finalAccess.add(operation);
+			}
 		}
 
 		if(null==this.group){
 			logger.warn("check your user group settings and ensure your authority.");
 		}else {
 			Tuple tuple=this.group.getOperations();
-			tuple.forEach(x->finalAccess.add((Operation) x));
+			if(null==tuple){
+				logger.error("this user group do not have any operation. please check your privilege.");
+			}else {
+				tuple.forEach(x-> this.finalAccess.add((Operation) x));
+			}
 		}
 
 	}

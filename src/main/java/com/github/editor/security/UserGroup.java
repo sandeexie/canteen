@@ -14,7 +14,7 @@ public class UserGroup {
 	// 用户组操作权限
 	private Tuple operations;
 
-	private volatile Object lock;
+	private volatile Object lock=new Object();
 
 	// 用户组角色
 	private Role role;
@@ -57,7 +57,7 @@ public class UserGroup {
 		return this.operations;
 	}
 
-	private void setOperations(){
+	public void setOperations(){
 		synchronized (lock){
 			switch (role){
 				case ADMIN:
@@ -70,6 +70,7 @@ public class UserGroup {
 									Operation.REGISTE,
 									Operation.SHUTDOWN
 							);
+					break;
 				case DEVELOP:
 					this.operations=
 							new Tuple4(
@@ -78,6 +79,7 @@ public class UserGroup {
 								Operation.QUERY,
 								Operation.RESTART
 							);
+					break;
 				case ANALYSIS:
 					this.operations=
 							new Tuple3(
@@ -85,10 +87,13 @@ public class UserGroup {
 									Operation.DELETE,
 									Operation.QUERY
 							);
+					break;
 				case VIEWER:
 					this.operations=new Tuple1(Operation.QUERY);
+					break;
 				case NONE:
 					this.operations=new Tuple0();
+					break;
 			}
 		}
 	}
