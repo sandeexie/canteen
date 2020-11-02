@@ -1,4 +1,4 @@
-package com.github.editor.security;
+package com.github.editor.security.auth;
 
 /**
  * 权限操作

@@ -1,9 +1,9 @@
 package security;
 
-import com.github.editor.security.Operation;
-import com.github.editor.security.Role;
-import com.github.editor.security.UserAuth;
-import com.github.editor.security.UserGroup;
+import com.github.editor.security.auth.Operation;
+import com.github.editor.security.auth.Role;
+import com.github.editor.security.auth.UserAuth;
+import com.github.editor.security.auth.UserGroup;
 import com.github.editor.utils.collections.Tuple;
 import org.junit.Test;
 

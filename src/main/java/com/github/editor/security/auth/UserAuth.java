@@ -1,4 +1,4 @@
-package com.github.editor.security;
+package com.github.editor.security.auth;
 
 import com.github.editor.utils.collections.Tuple;
 import org.slf4j.Logger;

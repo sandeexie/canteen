@@ -1,4 +1,4 @@
-package com.github.editor.security;
+package com.github.editor.security.auth;
 
 /**
  * @date 2020-10-28

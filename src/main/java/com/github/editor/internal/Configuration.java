@@ -44,41 +44,51 @@ public class Configuration {
 	// 连接池大小参数
 	public static final String CONNETION_POOL_SIZE="connection.pool.size";
 
+	public static final String ENABLE_DDOS_DEFENSE="enable.ddos.defense";
+
+	public static final String ENABLE_XSS_DEFENSE="enable.xss.defense";
+
 	/*================================================================*/
 
 	// RPC默认最大连接次数
-	public static final int DEFAULT_MAX_RPC_CONNECTION_TIMES=50;
+	public static int DEFAULT_MAX_RPC_CONNECTION_TIMES=50;
 
 	// 默认执行端口号
-	public static final String DEFAULT_EXECUTE_PORT="5488";
+	public static String DEFAULT_EXECUTE_PORT="5488";
 
 	// 默认开启连接池
-	public static final boolean DEFALUT_CONNECT_POOL_ENABLED=true;
+	public static boolean DEFALUT_CONNECT_POOL_ENABLED=true;
 
 	// 默认持久化存储开启
-	public static final boolean DEFALUT_PERSISTENCE_ENABLED=true;
+	public static boolean DEFALUT_PERSISTENCE_ENABLED=true;
 
 	// 默认使用SSL
-	public static final boolean DEFAULT_SSL_ENABLED=true;
+	public static boolean DEFAULT_SSL_ENABLED=true;
 
 	// 默认字符集
-	public static final String DEFAULT_CHARSET_FORMAT="UTF-8";
+	public static String DEFAULT_CHARSET_FORMAT="UTF-8";
 
 	// 默认登录用户(匿名用户)
-	public static final String DEFAULT_LOGIN_NAME="anonymous";
+	public static String DEFAULT_LOGIN_NAME="anonymous";
 
 	// 默认执行限时
-	public static final long DEFAULT_EXECUTE_DEADLINE=Long.MAX_VALUE-8;
+	public static long DEFAULT_EXECUTE_DEADLINE=Long.MAX_VALUE-8;
 
 	// 默认重试次数
-	public static final int DEFAULT_MAX_RETRY_TIMES=6;
+	public static int DEFAULT_MAX_RETRY_TIMES=6;
 
 	// 默认等待时间
-	public static final int DEFAULT_WAIT_MILLSECONDS=15000;
+	public static int DEFAULT_WAIT_MILLSECONDS=15000;
 
 	// 默认启动连接池
-	public static final boolean DEFAULT_CONNECTION_POOL_ENABLED=true;
+	public static boolean DEFAULT_CONNECTION_POOL_ENABLED=true;
 
 	// 默认连接池大小
-	public static final int DEAFAULT_CONNETION_POOL_SIZE=100;
+	public static int DEAFAULT_CONNETION_POOL_SIZE=100;
+
+	// 默认DDos防御开启
+	public static boolean DEFAULT_DDOS_DEFENSE=true;
+
+	// 默认开启XSS防御
+	public static boolean DEFAULT_XSS_DEFENSE=true;
 }
