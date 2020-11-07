@@ -18,8 +18,8 @@ public class KVStoreSerializer {
 
 	protected final ObjectMapper mapper;
 
-	public KVStoreSerializer(ObjectMapper mapper) {
-		this.mapper = mapper;
+	public KVStoreSerializer() {
+		this.mapper = new ObjectMapper();
 	}
 
 	public final byte[] serialize(Object obj){
