@@ -22,16 +22,22 @@ public class KVStoreSerializer {
 		this.mapper = mapper;
 	}
 
-	public final byte[] serialize(Object obj) throws Exception{
-		if(obj instanceof String){
-			return ((String) obj).getBytes(UTF_8);
-		} else {
-			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-			try (GZIPOutputStream out = new GZIPOutputStream(bytes)) {
-				mapper.writeValue(out, obj);
+	public final byte[] serialize(Object obj){
+		try {
+			if(obj instanceof String){
+				return ((String) obj).getBytes(UTF_8);
+			} else {
+				ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+				try (GZIPOutputStream out = new GZIPOutputStream(bytes)) {
+					mapper.writeValue(out, obj);
+				}
+				return bytes.toByteArray();
 			}
-			return bytes.toByteArray();
+		}catch (Exception e){
+			e.printStackTrace();
 		}
+		// 保证确认有返回
+		return null;
 	}
 
 	public final <T> T deserialize(byte[] data,Class<T> clazz) throws Exception{
@@ -49,7 +55,7 @@ public class KVStoreSerializer {
 		return String.valueOf(value).getBytes(UTF_8);
 	}
 
-	final long deserilizeLongType(byte[] data){
+	public final long deserilizeLong(byte[] data){
 		return Long.parseLong(new String(data,UTF_8));
 	}
 }

@@ -2,13 +2,13 @@ package com.github.editor.kvstore;
 
 public abstract class KVStoreView<T> implements Iterable<T> {
 
-	protected boolean ascending = true;
-	protected String index=KVIndex.NATURAL_INDEX_NAME;
-	protected Object first=null;
-	protected Object last=null;
-	protected Object parent=null;
-	long skip=0L;
-	long max=Long.MAX_VALUE;
+	public boolean ascending = true;
+	public String index=KVIndex.NATURAL_INDEX_NAME;
+	public Object first=null;
+	public Object last=null;
+	public Object parent=null;
+	public long skip=0L;
+	public long max=Long.MAX_VALUE;
 
 	public KVStoreView<T> reverseView(){
 		ascending=!ascending;

@@ -81,14 +81,14 @@ public class KVTypeInfo {
 	}
 
 	public Object getIndexValue(String indexName,Object instance) throws Exception{
-		return getAccessors(indexName).get(instance);
+		return getAccessor(indexName).get(instance);
 	}
 
 	public Stream<KVIndex> indices(){
 		return indices.values().stream();
 	}
 
-	Accessor getAccessors(String indexName){
+	public Accessor getAccessor(String indexName){
 		Accessor accessor=accessors.get(indexName);
 		if(null==accessor)
 			logging.logWarning("There is not an index of "+indexName);
@@ -97,6 +97,6 @@ public class KVTypeInfo {
 
 	Accessor getParentAccessors(String indexName){
 		KVIndex index=indices.get(indexName);
-		return index.parent().isEmpty()?null:getAccessors(index.parent());
+		return index.parent().isEmpty()?null:getAccessor(index.parent());
 	}
 }
