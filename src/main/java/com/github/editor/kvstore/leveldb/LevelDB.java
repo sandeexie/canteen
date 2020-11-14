@@ -54,6 +54,7 @@ public class LevelDB implements KVStore {
 		this._db = new AtomicReference(JniDBFactory.factory.open(path, options));
 
 		byte[] versionData = _db.get().get(STORE_VERSION_KEY);
+		// 设置版本信息
 		if (versionData != null) {
 			long version = serializer.deserilizeLong(versionData);
 			if (version != STORE_VERSION) {
@@ -63,7 +64,7 @@ public class LevelDB implements KVStore {
 		} else {
 			_db.get().put(STORE_VERSION_KEY, serializer.serialize(STORE_VERSION));
 		}
-
+		// 存储别名信息
 		Map<String, byte[]> aliases;
 		try {
 			aliases = get(TYPE_ALIASES_KEY, TypeAlias.class).aliases;

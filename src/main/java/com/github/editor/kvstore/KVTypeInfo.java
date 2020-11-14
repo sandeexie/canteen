@@ -26,7 +26,7 @@ public class KVTypeInfo {
 		this.type = type;
 		this.indices=new HashMap();
 		this.accessors=new HashMap();
-		// 检查属性参数
+		// 存储索引值
 		for (Field f:type.getDeclaredFields()){
 			KVIndex index=f.getAnnotation(KVIndex.class);
 			if(null!=index){
@@ -37,7 +37,7 @@ public class KVTypeInfo {
 				accessors.put(index.value(),new FieldAccessor(f));
 			}
 		}
-		// 检查方法参数
+		// 存储方法参数
 		for (Method m:type.getDeclaredMethods()) {
 			KVIndex index=m.getAnnotation(KVIndex.class);
 			checkIndex(index,indices);
@@ -52,7 +52,7 @@ public class KVTypeInfo {
 
 		if(indices.containsKey(KVIndex.NATURAL_INDEX_NAME)){
 			logging.logInfo("There exists an natual_index index.");
-			if(indices.get(KVIndex.NATURAL_INDEX_NAME).parent().isEmpty())
+			if(!indices.get(KVIndex.NATURAL_INDEX_NAME).parent().isEmpty())
 				logging.logError("Natural_index can not have parent node.");
 		}
 

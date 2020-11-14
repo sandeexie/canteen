@@ -226,6 +226,15 @@ public class LevelDBTypeInfo {
 			return toKey(value,ENTRY_PREFIX);
 		}
 
+		/**
+		 * key生成函数
+		 * <em>
+		 *
+		 * </em>
+		 * @param value 对象实例
+		 * @param prefix 前缀
+		 * @return
+		 */
 		byte[] toKey(Object value,byte prefix){
 			if(value instanceof String){
 				byte[] bytes = ((String) value).getBytes(UTF_8);
@@ -342,6 +351,16 @@ public class LevelDBTypeInfo {
 			addOrRemove(batch,entity,null,null,naturalKey,prefix);
 		}
 
+		/**
+		 * 更新存储信息
+		 * @param batch
+		 * @param entity 写入实例
+		 * @param existing 实例是否存在(移除时候为null)
+		 * @param data 写入数据
+		 * @param naturalKey 自然键
+		 * @param prefix 前缀信息
+		 * @throws Exception
+		 */
 		public void addOrRemove(
 				WriteBatch batch,
 				Object entity,
