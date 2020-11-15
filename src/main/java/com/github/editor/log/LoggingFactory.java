@@ -1,6 +1,7 @@
 package com.github.editor.log;
 
 public class LoggingFactory {
+
 	private static LoggingFactory factory = new LoggingFactory();
 
 	public static LoggingFactory getInstance() {
