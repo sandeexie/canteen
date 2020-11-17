@@ -1,7 +1,6 @@
 package com.github.canteen.metrics;
 
 import com.github.canteen.client.Client;
-import com.github.canteen.rpc.RPCClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,8 +47,7 @@ public class IntegerMetrics extends Metrics {
 		} else{
 			// TODO 这里需要通过RPC端口进行连接
 			Client client=new Client(host,port);
-			RPCClient rpcClient = new RPCClient();
-			return rpcClient.remoteExecute(host,port,null);
+			return false;
 		}
 	}
 }
