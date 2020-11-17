@@ -1,7 +1,7 @@
 package logging;
 
-import com.github.editor.log.Logging;
-import com.github.editor.log.LoggingFactory;
+import com.github.canteen.log.Logging;
+import com.github.canteen.log.LoggingFactory;
 import org.junit.Test;
 
 /**

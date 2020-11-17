@@ -1,10 +1,10 @@
 package security;
 
-import com.github.editor.security.auth.Operation;
-import com.github.editor.security.auth.Role;
-import com.github.editor.security.auth.UserAuth;
-import com.github.editor.security.auth.UserGroup;
-import com.github.editor.utils.collections.Tuple;
+import com.github.canteen.security.auth.Operation;
+import com.github.canteen.security.auth.Role;
+import com.github.canteen.security.auth.UserAuth;
+import com.github.canteen.security.auth.UserGroup;
+import com.github.canteen.utils.collections.Tuple;
 import org.junit.Test;
 
 import java.util.ArrayList;
