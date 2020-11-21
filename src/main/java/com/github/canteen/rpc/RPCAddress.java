@@ -2,11 +2,11 @@ package com.github.canteen.rpc;
 
 public class RPCAddress {
 
-	String host;
+	private String host;
 
-	int port;
+	private int port;
 
-	String protocol;
+	private String protocol;
 
 	public RPCAddress(){
 		this.host="0.0.0.0";

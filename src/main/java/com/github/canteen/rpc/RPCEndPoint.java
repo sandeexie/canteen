@@ -9,14 +9,23 @@ public class RPCEndPoint {
 	public String endPointName;
 
 	/**
-	 * 使用{@link RPCEndPointRef}进行生命周期设计,当
+	 * 使用{@link RPCEndPointRef}进行生命周期设计
 	 */
 	public RPCEndPointRef self;
 
+	/**
+	 * 启动回调函数,一般情况下当<code>self</code>被赋值的时候
+	 * 会调用这个回调
+	 */
 	public void onStart(){
 
 	}
 
+	/**
+	 * 异常处理回调函数
+	 * @param cause 异常发生的原因
+	 * @throws Throwable
+	 */
 	public void onError(Throwable cause) throws Throwable {
 		throw cause;
 	}
