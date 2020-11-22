@@ -48,6 +48,9 @@ public class Configuration {
 
 	public static final String ENABLE_XSS_DEFENSE="enable.xss.defense";
 
+	public static final String RPC_MAX_RETRY_TIMES="rpc.max.retry.times";
+
+	public static final String RPC_WAITING_MICROSECONDS="rpc.waiting.microseconds";
 	/*================================================================*/
 
 	// RPC默认最大连接次数
@@ -91,4 +94,8 @@ public class Configuration {
 
 	// 默认开启XSS防御
 	public static boolean DEFAULT_XSS_DEFENSE=true;
+
+	public static int DEFAULT_RPC_MAX_RETRY_TIMES=3;
+
+	public static long DEFAULT_RPC_WAITING_MICROSECONDS=1000;
 }
