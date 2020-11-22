@@ -51,6 +51,10 @@ public class Configuration {
 	public static final String RPC_MAX_RETRY_TIMES="rpc.max.retry.times";
 
 	public static final String RPC_WAITING_MICROSECONDS="rpc.waiting.microseconds";
+
+	public static final String RPC_REICEIVE_UPPER_MICROSECONDS="rpc.receive.upper.microseconds";
+
+	public static final String RPC_ASK_TIMEOUT="rpc.ask.timeout";
 	/*================================================================*/
 
 	// RPC默认最大连接次数
@@ -98,4 +102,8 @@ public class Configuration {
 	public static int DEFAULT_RPC_MAX_RETRY_TIMES=3;
 
 	public static long DEFAULT_RPC_WAITING_MICROSECONDS=1000;
+
+	public static long DEFAULT_RPC_REICEIVE_UPPER_MICROSECONDS=5000;
+
+	public static long DEFAULT_RPC_ASK_TIMEOUT=5000;
 }
