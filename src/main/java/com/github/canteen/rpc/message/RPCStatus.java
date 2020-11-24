@@ -5,9 +5,10 @@ package com.github.canteen.rpc.message;
  */
 public enum RPCStatus {
 	INITIALIZED,
-	SENT,
-	ACCEPTED,
-	FINISHED,
-	SEND_BACK,
-	LOCAL_RECEIVED
+	STARTED,
+	CONNECTED,
+	ERROR,
+	DISCONNECTED,
+	STOPPED,
+	DESTROYED
 }
