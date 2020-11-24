@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -79,7 +80,7 @@ public class Inbox implements Serializable {
 	 * 将RPC端点设置为启动状态,用于接收RPC消息
 	 * @param callback
 	 */
-	public void initRpcEndpoint(Consumer callback){
+	public void initRpcEndpoint(BooleanSupplier callback,boolean useCallBack){
 		assert !this.stopped;
 		assert rpcStatus!=RPCStatus.CONNECTED && rpcStatus!=RPCStatus.STARTED;
 		synchronized (lock){
@@ -105,11 +106,24 @@ public class Inbox implements Serializable {
 				};
 				rpcEndPoint.setSelf(ref);
 				rpcStatus=RPCStatus.STARTED;
+				// 调用回调函数
+				if(useCallBack || null==callback){
+					rpcEndPoint.onStart(callback);
+				}else {
+					rpcEndPoint.onStart();
+				}
 			}catch (Exception e){
 				logging.logWarning("RPC Endpoint started on failure.",e);
 			}
 		}
+	}
 
+	public void stopRpcEndpoint(BooleanSupplier callback,boolean useCallBack){
+		assert !this.stopped;
+		assert rpcStatus!=RPCStatus.STOPPED && rpcStatus!=RPCStatus.DESTROYED;
+		synchronized (lock){
+
+		}
 	}
 
 	/**
@@ -118,7 +132,6 @@ public class Inbox implements Serializable {
 	public void receive(InboxMessage message){
 		receive(message, Configuration.DEFAULT_RPC_REICEIVE_UPPER_MICROSECONDS);
 	}
-
 
 	/**
 	 * 接受消息
