@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 
-@Service
 public class MySQLHandler extends JDBCHandler {
 
 	public boolean checkAccess(UserInfo userInfo) {

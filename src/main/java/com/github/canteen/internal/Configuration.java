@@ -55,6 +55,9 @@ public class Configuration {
 	public static final String RPC_REICEIVE_UPPER_MICROSECONDS="rpc.receive.upper.microseconds";
 
 	public static final String RPC_ASK_TIMEOUT="rpc.ask.timeout";
+
+	public static final String RPC_RECOVER_TRY_TIMES="rpc.recover.try.times";
+
 	/*================================================================*/
 
 	// RPC默认最大连接次数
@@ -99,11 +102,18 @@ public class Configuration {
 	// 默认开启XSS防御
 	public static boolean DEFAULT_XSS_DEFENSE=true;
 
+	// 默认RPC连接重试次数
 	public static int DEFAULT_RPC_MAX_RETRY_TIMES=3;
 
+	// 默认RPC等待时间
 	public static long DEFAULT_RPC_WAITING_MICROSECONDS=1000;
 
+	// 默认RPC接受时间上限
 	public static long DEFAULT_RPC_REICEIVE_UPPER_MICROSECONDS=5000;
 
+	// 默认RPC请求时间上限
 	public static long DEFAULT_RPC_ASK_TIMEOUT=5000;
+
+	// 默认RPC状态恢复尝试次数
+	public static int DEFAULT_RPC_RECOVER_TRY_TIMES=3;
 }
