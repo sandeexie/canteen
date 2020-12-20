@@ -56,6 +56,19 @@ public abstract class RPCEndPointRef implements Serializable {
 		this.rpcAskTimeout=rpcAskTimeout;
 	}
 
+
+	public int getMaxRetries() {
+		return maxRetries;
+	}
+
+	public long getRetryWaitMs() {
+		return retryWaitMs;
+	}
+
+	public long getRpcAskTimeout() {
+		return rpcAskTimeout;
+	}
+
 	// 获取通信对端RPC地址
 	public abstract RPCAddress getAddress();
 

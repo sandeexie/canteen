@@ -5,4 +5,5 @@ package com.github.canteen.security.kerberos;
  */
 public class AuthServer {
 
+
 }

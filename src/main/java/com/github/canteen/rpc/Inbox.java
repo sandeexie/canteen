@@ -5,6 +5,7 @@ import com.github.canteen.log.Logging;
 import com.github.canteen.log.LoggingFactory;
 import com.github.canteen.rpc.message.InboxMessage;
 import com.github.canteen.rpc.message.Message;
+import com.github.canteen.rpc.message.OutboxMessage;
 import com.github.canteen.rpc.message.RPCStatus;
 
 import java.io.Serializable;
@@ -41,8 +42,15 @@ public class Inbox implements Serializable {
 	// 收件箱
 	private BlockingQueue<InboxMessage> inboxMessages;
 
+	// ACK信息 默认开启
+	private OutboxMessage ack;
+
+	private boolean needAck;
+
+	private int maxRecoveryTimes=-1;
+
 	/**
-	 * 初始化收件箱,初始完成的收件箱处于关闭状态
+	 * 初始化收件箱,初始完成的收件箱处于关闭状态,不可以接受消息
 	 * @param inboxName 收件箱名称
 	 */
 	public Inbox(String inboxName,String host,int port,String protocol){
@@ -52,12 +60,16 @@ public class Inbox implements Serializable {
 		this.rpcEndPoint=new RPCEndPoint(RPC_PREFIX+this.inboxName,rpcAddress);
 	}
 
+	public void setMaxRecoveryTimes(int maxRecoveryTimes) {
+		this.maxRecoveryTimes = maxRecoveryTimes;
+	}
+
 	/**
 	 * 启动收件箱
 	 */
 	public void start(){
-		assert this.stopped;
 		synchronized (lock){
+			assert this.stopped;
 			this.stopped=false;
 			rpcStatus=RPCStatus.INITIALIZED;
 		}
@@ -68,8 +80,8 @@ public class Inbox implements Serializable {
 	 * 停止收件箱
 	 */
 	public void stop(){
-		assert !this.stopped;
 		synchronized (lock){
+			assert !this.stopped;
 			this.stopped=true;
 			rpcStatus=RPCStatus.DESTROYED;
 		}
@@ -78,12 +90,13 @@ public class Inbox implements Serializable {
 
 	/**
 	 * 将RPC端点设置为启动状态,用于接收RPC消息
-	 * @param callback
+	 * @param callback 回调函数
+	 * @param useCallBack 使用使用回调函数
 	 */
 	public void initRpcEndpoint(BooleanSupplier callback,boolean useCallBack){
 		assert !this.stopped;
-		assert rpcStatus!=RPCStatus.CONNECTED && rpcStatus!=RPCStatus.STARTED;
 		synchronized (lock){
+			assert rpcStatus!=RPCStatus.CONNECTED && rpcStatus!=RPCStatus.STARTED;
 			try{
 				RPCEndPointRef ref=new RPCEndPointRef() {
 					// TODO 收件箱需要完成与消息环的通信 RPC地址填写消息环中映射的地址
@@ -95,7 +108,11 @@ public class Inbox implements Serializable {
 					// 收件箱不支持消息发送
 					@Override
 					public void send(Message message) {
-						throw new UnsupportedOperationException();
+						if(!needAck)
+							throw new UnsupportedOperationException();
+						else {
+							// TODO 发送ACK给消息环
+						}
 					}
 
 					// TODO 收件箱需要在需要ack消息中处理与消息环的通信
@@ -106,7 +123,6 @@ public class Inbox implements Serializable {
 				};
 				rpcEndPoint.setSelf(ref);
 				rpcStatus=RPCStatus.STARTED;
-				// 调用回调函数
 				if(useCallBack || null==callback){
 					rpcEndPoint.onStart(callback);
 				}else {
@@ -118,36 +134,74 @@ public class Inbox implements Serializable {
 		}
 	}
 
-	public void stopRpcEndpoint(BooleanSupplier callback,boolean useCallBack){
-		assert !this.stopped;
-		assert rpcStatus!=RPCStatus.STOPPED && rpcStatus!=RPCStatus.DESTROYED;
-		synchronized (lock){
-
+	/**
+	 * TODO Dispatcher和MessageLoop完毕之后回来处理验证信息问题
+	 * 对处于通信失败的节点进行测试,如果在规定次数内连接上,则修改为{@code RPCStatus.CONNECTED}
+	 * 否则将其视作断开连接{@code RPCStatus.DISCONNECTED}
+	 * @return 连上的标志位,为<code>true</code>表示连接成功
+	 */
+	public boolean recoverState(){
+		int recoveryTimes=maxRecoveryTimes<0? Configuration.DEFAULT_RPC_RECOVER_TRY_TIMES:maxRecoveryTimes;
+		boolean flag=false;
+		while (recoveryTimes>0 && !flag){
+			// TODO 发送一条连接消息给消息环,并获取响应结果
+			Future askTask=rpcEndPoint.getSelf().ask(null);
+			try {
+				Message message= (Message) askTask.get();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
+		return true;
 	}
 
 	/**
-	 * 从{@link MessageLoop}中接收消息
+	 * 停止RPC通信功能,将RPC端点设置为停止状态
+	 * @param callback 回调函数
+	 * @param useCallBack 是否使用默认回调
 	 */
-	public void receive(InboxMessage message){
-		receive(message, Configuration.DEFAULT_RPC_REICEIVE_UPPER_MICROSECONDS);
+	public void stopRpcEndpoint(BooleanSupplier callback,boolean useCallBack){
+		assert !this.stopped;
+		synchronized (lock){
+			assert rpcStatus!=RPCStatus.STOPPED && rpcStatus!=RPCStatus.DESTROYED;
+			try {
+				rpcEndPoint.setSelf(null);
+				rpcStatus=RPCStatus.STOPPED;
+				if(useCallBack || null==callback){
+					rpcEndPoint.onStart(callback);
+				}else {
+					rpcEndPoint.onStart();
+				}
+			} catch (Exception e){
+				logging.logWarning("RPC Endpoint stopped on failure.",e);
+			}
+		}
 	}
 
 	/**
 	 * 接受消息
-	 * TODO 支持ARQ重传
 	 * @param message 消息
-	 * @param timeout 时限
 	 */
-	public void receive(InboxMessage message,long timeout){
+	public synchronized boolean receive(InboxMessage message){
 		assert rpcStatus==RPCStatus.CONNECTED;
-		try {
-			inboxMessages.offer(message,timeout, TimeUnit.MICROSECONDS);
-		} catch (InterruptedException e) {
-			rpcStatus=RPCStatus.ERROR;
-			logging.logWarning("Message "+message.toString()+" can" +
-					"not be received in "+timeout+" ms.");
+		boolean flag=false;
+		int maxRetries = rpcEndPoint.getSelf().getMaxRetries();
+		long timeout=rpcEndPoint.getSelf().getRetryWaitMs();
+		while (maxRetries>0 && !flag){
+			try {
+				inboxMessages.offer(message,timeout, TimeUnit.MICROSECONDS);
+				flag=true;
+			} catch (InterruptedException e) {
+				logging.logWarning("Message "+message.toString()+" can" +
+						"not be received in "+timeout+" ms. Now try to redo it.");
+				maxRetries--;
+			}
 		}
+		if(!flag){
+			logging.logWarning("Message has not be received in given "+ maxRetries +" times. Please check network state.");
+			rpcStatus=RPCStatus.ERROR;
+		}
+		return flag;
 	}
 
 	/**
@@ -162,7 +216,7 @@ public class Inbox implements Serializable {
 			try{
 				consumer.accept(x);
 			}catch (Exception e){
-				logging.logWarning("Process element "+x+" on failure.");
+				logging.logWarning("Process element "+x+" on failure. Because "+ e.getMessage());
 			}
 		});
 	}
@@ -179,7 +233,7 @@ public class Inbox implements Serializable {
 			try{
 				x= (InboxMessage) function.apply(x);
 			}catch (Exception e){
-				logging.logWarning("Transform element "+x+" on failure.");
+				logging.logWarning("Transform element "+x+" on failure. Because "+e.getMessage());
 			}
 		});
 	}

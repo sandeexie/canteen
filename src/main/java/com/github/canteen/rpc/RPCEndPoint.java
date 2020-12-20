@@ -20,7 +20,7 @@ public class RPCEndPoint {
 	/**
 	 * 使用{@link RPCEndPointRef}进行生命周期设计
 	 */
-	public RPCEndPointRef self;
+	private RPCEndPointRef self;
 
 	public RPCEndPoint(String endPointName,RPCAddress rpcAddress){
 		this.endPointName=endPointName;
