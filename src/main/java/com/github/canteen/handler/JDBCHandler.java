@@ -2,14 +2,14 @@ package com.github.canteen.handler;
 
 
 import com.github.canteen.domain.UserInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.github.canteen.log.Logging;
+import com.github.canteen.log.LoggingFactory;
 
 import java.sql.Connection;
 
 public abstract class JDBCHandler implements ResolveHandler {
 
-	private static final Logger logger= LoggerFactory.getLogger(JDBCHandler.class);
+	private static final Logging logger= LoggingFactory.create();
 
 	private String sql;
 
@@ -39,9 +39,9 @@ public abstract class JDBCHandler implements ResolveHandler {
 	 */
 	public void onAuthed(){
 		if(this.isAuthed)
-			logger.info("User has passed the access verification");
+			logger.logInfo("User has passed the access verification");
 		else
-			logger.error("User has been denied by system");
+			logger.logError("User has been denied by system");
 	}
 
 	/**
@@ -55,9 +55,9 @@ public abstract class JDBCHandler implements ResolveHandler {
 	 */
 	public void onConnected(){
 		if(this.isConnected)
-			logger.info("JDBC connection has been acquired");
+			logger.logInfo("JDBC connection has been acquired");
 		else
-			logger.error("Can not get JDBC connection, please check your URL");
+			logger.logError("Can not get JDBC connection, please check your URL");
 	}
 
 	/**
@@ -86,9 +86,9 @@ public abstract class JDBCHandler implements ResolveHandler {
 	 */
 	public void onExecuted(String sql){
 		if (this.isSuccessedExecution)
-			logger.info(sql+" has been executed successfully");
+			logger.logInfo(sql+" has been executed successfully");
 		else
-			logger.error(sql+" executed on failure");
+			logger.logError(sql+" executed on failure");
 	}
 
 	/**
@@ -102,9 +102,9 @@ public abstract class JDBCHandler implements ResolveHandler {
 	 */
 	public void onReleased(){
 		if (this.isFreeSuccessed)
-			logger.info("JDBC connection has been released successfully");
+			logger.logInfo("JDBC connection has been released successfully");
 		else
-			logger.error("JDBC connection was released on failure");
+			logger.logError("JDBC connection was released on failure");
 	}
 
 	/**
@@ -112,7 +112,7 @@ public abstract class JDBCHandler implements ResolveHandler {
 	 * @param reason
 	 */
 	public void onError(Exception reason){
-		logger.error(reason.getMessage());
+		logger.logError(reason.getMessage());
 		this.reason=reason;
 	}
 

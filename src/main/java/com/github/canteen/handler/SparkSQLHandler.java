@@ -1,7 +1,6 @@
 package com.github.canteen.handler;
 
 import com.github.canteen.domain.UserInfo;
-import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 
