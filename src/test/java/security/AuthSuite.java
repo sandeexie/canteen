@@ -10,7 +10,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AuthTest {
+public class AuthSuite {
 
 	@Test
 	public void roleCheck(){
