@@ -1,3 +1,5 @@
+# noinspection SqlNoDataSourceInspectionForFile
+
 use OnlineEditor;
 
 drop table if exists config_info;
