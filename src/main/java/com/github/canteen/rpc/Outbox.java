@@ -33,15 +33,12 @@ public class Outbox implements Serializable {
 	// 收件箱运行状态
 	private boolean stopped;
 
-	private RPCEndPoint rpcEndPoint;
 
 	private BlockingQueue<OutboxMessage> outboxMessages;
 
 	public Outbox(String inboxName,String host,int port,String protocol){
 		this.outboxName=inboxName;
 		stopped=true;
-		RPCAddress rpcAddress = new RPCAddress(host, port,protocol);
-		this.rpcEndPoint=new RPCEndPoint(RPC_PREFIX+this.outboxName,rpcAddress);
 	}
 
 	public void start(){
