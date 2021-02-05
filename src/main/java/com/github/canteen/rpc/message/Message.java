@@ -1,5 +1,7 @@
 package com.github.canteen.rpc.message;
 
+import com.github.canteen.rpc.RPCAddress;
+
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.function.Consumer;
@@ -20,11 +22,11 @@ public abstract class Message implements Serializable {
 
 	private long requestId;
 
-	private RPCMessage localRPCAddress;
+	private RPCAddress localRPCAddress;
 
-	private RPCMessage source;
+	private RPCAddress source;
 
-	private RPCMessage destination;
+	private RPCAddress destination;
 
 	private ByteBuffer body;
 
@@ -35,8 +37,8 @@ public abstract class Message implements Serializable {
 	private boolean isSingleWay;
 
 	public Message(long requestId,
-	               RPCMessage source,
-	               RPCMessage destination,
+	               RPCAddress source,
+	               RPCAddress destination,
 	               ByteBuffer body,
 	               Consumer onFailure,
 	               Consumer onSuccess,
@@ -51,16 +53,16 @@ public abstract class Message implements Serializable {
 	}
 
 	public Message(long requestId,
-	               RPCMessage source,
-	               RPCMessage destination,
+	               RPCAddress source,
+	               RPCAddress destination,
 	               ByteBuffer body,
 	               Consumer onFailure) {
 		this(requestId,source,destination,body,onFailure,null,false);
 	}
 
 	public Message(long requestId,
-	               RPCMessage source,
-	               RPCMessage destination,
+	               RPCAddress source,
+	               RPCAddress destination,
 	               ByteBuffer body,
 	               Consumer onFailure,
 	               boolean isSingleWay) {
@@ -68,41 +70,41 @@ public abstract class Message implements Serializable {
 	}
 
 	public Message(long requestId,
-	               RPCMessage source,
-	               RPCMessage destination,
+	               RPCAddress source,
+	               RPCAddress destination,
 	               ByteBuffer body){
 		this(requestId,source,destination,body,null,null,false);
 	}
 
 	public Message(long requestId,
-	               RPCMessage source,
-	               RPCMessage destination,
+	               RPCAddress source,
+	               RPCAddress destination,
 	               ByteBuffer body,
 	               boolean isSingleWay){
 		this(requestId,source,destination,body,null,null,isSingleWay);
 	}
 
 	public Message(long requestId,
-	               RPCMessage source,
-	               RPCMessage destination){
+	               RPCAddress source,
+	               RPCAddress destination){
 		this(requestId,source,destination,null,null,null,false);
 	}
 
 	public Message(long requestId,
-	               RPCMessage source,
-	               RPCMessage destination,
+	               RPCAddress source,
+	               RPCAddress destination,
 	               boolean isSingleWay){
 		this(requestId,source,destination,null,null,null,isSingleWay);
 	}
 
 	public Message(long requestId,
-	               RPCMessage destination){
+	               RPCAddress destination){
 		this(requestId,null,destination,null,null,null,false);
 		this.source=localRPCAddress;
 	}
 
 	public Message(long requestId,
-	               RPCMessage destination,
+	               RPCAddress destination,
 	               boolean isSingleWay){
 		this(requestId,null,destination,null,null,null,isSingleWay);
 		this.source=localRPCAddress;
