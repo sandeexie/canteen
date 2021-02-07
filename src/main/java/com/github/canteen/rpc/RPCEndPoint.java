@@ -8,6 +8,12 @@ import java.util.function.Consumer;
 
 /**
  * RPC通信节点
+ * 包括:
+ * 1. 收件箱 {@link Inbox}
+ * 2. 发件箱 {@link Outbox}
+ * 3. RPC处理器 {@link RPCEndPointExecutor}
+ * 4. 唯一RPC定位表示 {@link RPCAddress}
+ * 包含对RPC处理器的生命周期控制
  */
 public class RPCEndPoint {
 
@@ -17,14 +23,89 @@ public class RPCEndPoint {
 
 	private RPCAddress rpcAddress;
 
-	/**
-	 * 使用{@link RPCEndPointRef}进行生命周期设计
-	 */
-	private RPCEndPointRef self;
+	// 绑定的收件箱
+	private Inbox inbox;
 
-	public RPCEndPoint(String endPointName,RPCAddress rpcAddress){
+	// 绑定的发件箱
+	private Outbox outbox;
+
+	// 是否可用
+	private boolean isAvailable;
+
+	private Object lock=new Object();
+
+	/**
+	 * 使用{@link RPCEndPointExecutor}进行生命周期设计
+	 */
+	private RPCEndPointExecutor self;
+
+	public RPCEndPoint(String endPointName,RPCAddress rpcAddress,Inbox inbox,Outbox outbox){
 		this.endPointName=endPointName;
 		this.rpcAddress=rpcAddress;
+		this.inbox=inbox;
+		this.outbox=outbox;
+		this.isAvailable=false;
+	}
+
+	public void startRPCEndPoint() throws Throwable {
+		assert this.isAvailable==false;
+		synchronized (lock){
+			try {
+				this.isAvailable=true;
+				onStart();
+				// TODO 注册到Dispatch
+
+			}catch (Throwable cause){
+				logging.logWarning("start rpc endpoint" +endPointName+" on failure.");
+				onError(cause);
+			}
+		}
+	}
+
+	public void startRPCEndPoint(BooleanSupplier startCallback,Consumer errorCallback) throws Throwable {
+		assert this.isAvailable==false;
+		synchronized (lock){
+			try {
+				this.isAvailable=true;
+				onStart(startCallback);
+				// TODO 注册的Dispatch
+			}catch (Throwable cause){
+				onError(cause,errorCallback);
+			}
+		}
+	}
+
+	public void stopRPCEndPoint() throws Throwable {
+		assert this.isAvailable==true;
+		synchronized (lock){
+			try {
+				this.isAvailable=false;
+				onStop();
+				// TODO 解除Dispatch的注册信息
+
+			}catch (Throwable cause){
+				onError(cause);
+			}
+		}
+	}
+
+	public boolean isStarted(){
+		return this.isAvailable;
+	}
+
+	public void stopRPCEndPoint(BooleanSupplier stopCallback,Consumer errorCallback) throws Throwable {
+		assert this.isAvailable==true;
+		synchronized (lock){
+			try {
+				this.isAvailable=false;
+				onStop(stopCallback);
+				// TODO 解除Dispatch的注册信息
+
+			}catch (Throwable cause){
+				onError(cause,errorCallback);
+			}
+
+		}
 	}
 
 	/**
@@ -32,11 +113,11 @@ public class RPCEndPoint {
 	 * 会调用这个回调
 	 * @param callback 回调函数
 	 */
-	public void onStart(BooleanSupplier callback){
+	private void onStart(BooleanSupplier callback){
 		callback.getAsBoolean();
 	}
 
-	public void onStart(){
+	private void onStart(){
 		logging.logInfo("Rpc Endpoint "+rpcAddress.toString()+" has been started.");
 	}
 
@@ -46,25 +127,12 @@ public class RPCEndPoint {
 	 * @param callback 回调函数
 	 * @throws Throwable
 	 */
-	public void onError(Throwable cause,Consumer callback) throws Throwable {
+	private void onError(Throwable cause,Consumer callback) throws Throwable {
 		callback.accept(cause);
 	}
 
-	public void onError(Throwable cause) throws Throwable{
+	private void onError(Throwable cause) throws Throwable{
 		logging.logError("There occurred error in rpc module "+cause.getMessage());
-	}
-
-	/**
-	 * 连接到rpc端点时候的回调
-	 * @param rpcAddress 需要连接的RPC端点
-	 * @param callback   回调函数
-	 */
-	public void onConnected(RPCAddress rpcAddress,Consumer callback){
-		callback.accept(rpcAddress);
-	}
-
-	public void onConnected(RPCAddress rpcAddress){
-		logging.logInfo("Connected "+rpcAddress.toString()+" successfully.");
 	}
 
 	/**
@@ -72,22 +140,22 @@ public class RPCEndPoint {
 	 * @param rpcAddress 通信的RPC地址
 	 * @param callback 回调函数
 	 */
-	public void onDisconnected(RPCAddress rpcAddress,Consumer callback){
+	private void onDisconnected(RPCAddress rpcAddress,Consumer callback){
 		callback.accept(rpcAddress);
 	}
 
-	public void onDisconnected(RPCAddress rpcAddress){
+	private void onDisconnected(RPCAddress rpcAddress){
 		logging.logInfo("Disconnected "+rpcAddress.toString()+" successfully.");
 	}
 
-	public void onStop(BooleanSupplier callback){
+	private void onStop(BooleanSupplier callback){
 		callback.getAsBoolean();
 	}
 
 	/**
 	 * 停止RPC端点工作的方法,<code>self</code>会被置空,这个方法不应当去发送消息
 	 */
-	public void onStop(){
+	private void onStop(){
 		logging.logInfo("RPC EndPoint"+ rpcAddress.toString() +" has been shut down.");
 	}
 
@@ -99,11 +167,19 @@ public class RPCEndPoint {
 		return endPointName;
 	}
 
-	public void setSelf(RPCEndPointRef self) {
+	public void setSelf(RPCEndPointExecutor self) {
 		this.self = self;
 	}
 
-	public RPCEndPointRef getSelf() {
+	public RPCEndPointExecutor getSelf() {
 		return self;
+	}
+
+	public RPCAddress getRpcAddress() {
+		return rpcAddress;
+	}
+
+	public void setRpcAddress(RPCAddress rpcAddress) {
+		this.rpcAddress = rpcAddress;
 	}
 }
