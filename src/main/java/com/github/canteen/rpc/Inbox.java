@@ -8,7 +8,7 @@ import com.github.canteen.rpc.message.RPCStatus;
 import java.io.Serializable;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 /**
@@ -99,13 +99,14 @@ public class Inbox implements Serializable {
 	 * @param consumer 处理函数
 	 * @exception Exception 处理时遇到的异常
 	 */
-	public void process(Consumer consumer){
+	public void process(BiConsumer consumer){
 		assert !this.stopped;
-		inboxMessages.forEach(x-> {
+		inboxMessages.forEach(message-> {
 			try{
-				consumer.accept(x);
+				// TODO 暂时不作存储
+				consumer.accept(message,null);
 			}catch (Exception e){
-				logging.logWarning("Process element "+x+" on failure. Because "+ e.getMessage());
+				logging.logWarning("Process element "+message+" on failure. Because "+ e.getMessage());
 			}
 		});
 	}

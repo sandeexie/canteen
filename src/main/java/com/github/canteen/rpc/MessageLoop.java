@@ -3,11 +3,12 @@ package com.github.canteen.rpc;
 import com.github.canteen.internal.Configuration;
 import com.github.canteen.log.Logging;
 import com.github.canteen.log.LoggingFactory;
-import com.github.canteen.rpc.message.InboxMessage;
+import com.github.canteen.rpc.message.Message;
+import com.github.canteen.rpc.message.OutboxMessage;
 import com.github.canteen.utils.ParameterUtil;
 
 import java.util.concurrent.*;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 /**
  * 消息环
@@ -21,7 +22,7 @@ public class MessageLoop {
 
 	private static final Logging logging= LoggingFactory.create();
 
-	private Consumer action;
+	private BiConsumer<Message,RPCEndPoint> action;
 
 	private Runnable receiveLoopRunnable=new Runnable() {
 		@Override
@@ -42,7 +43,7 @@ public class MessageLoop {
 	 * 初始化工作线程
 	 * @param corePoolSize 处于工作状态的线程数量
 	 */
-	public MessageLoop(int corePoolSize, Consumer process){
+	public MessageLoop(int corePoolSize, BiConsumer action){
 
 
 		int maxPoolSize= (int) ParameterUtil.getConfiguration(
@@ -63,7 +64,20 @@ public class MessageLoop {
 				TimeUnit.MICROSECONDS,
 				workQueue
 		);
+		this.action=action;
 	}
+
+	public MessageLoop(){
+		int coreSize=ParameterUtil.getConfiguration(
+				Configuration.MESSAGELOOP_THREAD_POOL_CORE_SIZE,
+				Configuration.DEFAULT_MESSAGELOOP_THREAD_POOL_CORE_SIZE
+		);
+		action=((message, rpcEndPoint) -> {
+			assert message instanceof Message;
+			assert rpcEndPoint instanceof RPCEndPoint;
+			rpcEndPoint.store(message);
+		});
+ 	}
 
 	public void start(){
 		assert this.stopped;
@@ -89,8 +103,13 @@ public class MessageLoop {
 		}
 	}
 
-	// TODO 通过Dispatch将消息发送给对端RPC端点
-	public void post(String endpointName, InboxMessage message){
+	/**
+	 *
+	 * 发送的时候需要做好差错控制,选择路由
+	 * @param endpointName RPC端点名称
+	 * @param message 发送的消息
+	 */
+	public void post(String endpointName, OutboxMessage message){
 		RPCEndPoint endPoint=Dispatcher.endPointMap.getOrDefault(endpointName,null);
 		if(endPoint==null){
 			logging.logWarning("Endpoint "+endpointName+" is not in the list of dispatch.");
@@ -98,6 +117,7 @@ public class MessageLoop {
 			assert endPoint.isStarted();
 			RPCAddress address=endPoint.getRpcAddress();
 			// TODO 与address进行通信
+
 
 		}
 	}
@@ -124,7 +144,7 @@ public class MessageLoop {
 	 * 从收件箱中拿到消息并进行处理
 	 * @param action 处理函数
 	 */
-	private void receiveLoop(Consumer action){
+	private void receiveLoop(BiConsumer action){
 		try {
 			while (true){
 				Inbox inbox=active.poll();

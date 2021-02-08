@@ -2,7 +2,9 @@ package com.github.canteen.rpc;
 
 import com.github.canteen.log.Logging;
 import com.github.canteen.log.LoggingFactory;
+import com.github.canteen.rpc.message.Message;
 
+import java.util.concurrent.BlockingQueue;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
@@ -26,6 +28,8 @@ public class RPCEndPoint {
 	// 绑定的收件箱
 	private Inbox inbox;
 
+	private BlockingQueue<Message> cache;
+
 	// 绑定的发件箱
 	private Outbox outbox;
 
@@ -47,14 +51,22 @@ public class RPCEndPoint {
 		this.isAvailable=false;
 	}
 
+	public void store(Message message){
+		this.cache.offer(message);
+	}
+
+	public Message fetch(Message message){
+		return this.cache.poll();
+	}
+
 	public void startRPCEndPoint() throws Throwable {
 		assert this.isAvailable==false;
 		synchronized (lock){
 			try {
 				this.isAvailable=true;
 				onStart();
-				// TODO 注册到Dispatch
-
+				Dispatcher.endPointMap.put(endPointName,this);
+				Dispatcher.messageLoopMapping.put(endPointName,new MessageLoop());
 			}catch (Throwable cause){
 				logging.logWarning("start rpc endpoint" +endPointName+" on failure.");
 				onError(cause);
@@ -68,7 +80,8 @@ public class RPCEndPoint {
 			try {
 				this.isAvailable=true;
 				onStart(startCallback);
-				// TODO 注册的Dispatch
+				Dispatcher.endPointMap.put(endPointName,this);
+				Dispatcher.messageLoopMapping.put(endPointName,new MessageLoop());
 			}catch (Throwable cause){
 				onError(cause,errorCallback);
 			}
@@ -81,8 +94,8 @@ public class RPCEndPoint {
 			try {
 				this.isAvailable=false;
 				onStop();
-				// TODO 解除Dispatch的注册信息
-
+				Dispatcher.endPointMap.remove(endPointName);
+				Dispatcher.messageLoopMapping.remove(endPointName);
 			}catch (Throwable cause){
 				onError(cause);
 			}
@@ -99,8 +112,8 @@ public class RPCEndPoint {
 			try {
 				this.isAvailable=false;
 				onStop(stopCallback);
-				// TODO 解除Dispatch的注册信息
-
+				Dispatcher.endPointMap.remove(endPointName);
+				Dispatcher.messageLoopMapping.remove(endPointName);
 			}catch (Throwable cause){
 				onError(cause,errorCallback);
 			}
