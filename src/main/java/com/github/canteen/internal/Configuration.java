@@ -58,6 +58,19 @@ public class Configuration {
 
 	public static final String RPC_RECOVER_TRY_TIMES="rpc.recover.try.times";
 
+	public static final String ENCODE_ALGORITHM="encode.algorithm";
+
+	public static final String DECODE_ALGORITHM="decode.algorithm";
+
+	public static final String KERBOEROS_CLIENT_NAME="kerboeros.client.name";
+
+	public static final String KERBOEROS_CLIENT_PASSWORD="kerboeros.client.password";
+
+	public static final String MESSAGELOOP_THREAD_POOL_SIZE="messageloop.thread.pool.size";
+
+	public static final String MESSAGELOOP_THREAD_POOL_KEEPALIVE_TIME="messageloop.thread.pool.keepalive.time";
+
+	public static final String MESSAGELOOP_THREAD_POOL_CORE_SIZE="messageloop.thread.pool.core.size";
 	/*================================================================*/
 
 	// RPC默认最大连接次数
@@ -116,4 +129,16 @@ public class Configuration {
 
 	// 默认RPC状态恢复尝试次数
 	public static int DEFAULT_RPC_RECOVER_TRY_TIMES=3;
+
+	// 默认加密算法
+	public static String DEFAULT_ENCODE_ALGORITHM="AES";
+
+	// 默认解密算法
+	public static String DEFAULT_DECODE_ALGORITHM="AES";
+
+	public static int DEFAULT_MESSAGE_THREAD_POOL_SIZE=10;
+
+	public static int DEFAULT_MESSAGELOOP_THREAD_POOL_KEEPALIVE_TIME=1000;
+
+	public static int DEFAULT_MESSAGELOOP_THREAD_POOL_CORE_SIZE=8;
 }
