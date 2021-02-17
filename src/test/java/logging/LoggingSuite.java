@@ -9,7 +9,7 @@ import org.junit.Test;
  * @date 2020-10-31
  * @author xyf
  */
-public class LoggingTest {
+public class LoggingSuite {
 
 
 	@Test
