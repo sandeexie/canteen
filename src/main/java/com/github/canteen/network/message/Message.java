@@ -1,9 +1,9 @@
-package com.github.canteen.rpc.message;
+package com.github.canteen.network.message;
 
 import com.github.canteen.rpc.RPCAddress;
 
 import java.io.Serializable;
-import java.nio.ByteBuffer;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 /**
@@ -18,7 +18,7 @@ import java.util.function.Consumer;
  *     响应回调 onSuccess
  * </p>
  */
-public abstract class Message implements Serializable {
+public class Message implements Serializable {
 
 	private long requestId;
 
@@ -28,7 +28,7 @@ public abstract class Message implements Serializable {
 
 	private RPCAddress destination;
 
-	private ByteBuffer body;
+	private byte[] body;
 
 	private Consumer onFailure;
 
@@ -36,14 +36,13 @@ public abstract class Message implements Serializable {
 
 	private boolean isSingleWay;
 
-	public Message(long requestId,
-	               RPCAddress source,
+	public Message(RPCAddress source,
 	               RPCAddress destination,
-	               ByteBuffer body,
+	               byte[] body,
 	               Consumer onFailure,
 	               Consumer onSuccess,
 	               boolean isSingleWay) {
-		this.requestId=requestId;
+		this.requestId= UUID.randomUUID().getLeastSignificantBits();
 		this.source=source;
 		this.destination=destination;
 		this.body=body;
@@ -52,61 +51,65 @@ public abstract class Message implements Serializable {
 		this.isSingleWay=isSingleWay;
 	}
 
-	public Message(long requestId,
-	               RPCAddress source,
+	public Message(RPCAddress source,
 	               RPCAddress destination,
-	               ByteBuffer body,
+	               byte[] body,
 	               Consumer onFailure) {
-		this(requestId,source,destination,body,onFailure,null,false);
+		this(source,destination,body,onFailure,null,false);
 	}
 
-	public Message(long requestId,
-	               RPCAddress source,
+	public Message(RPCAddress source,
 	               RPCAddress destination,
-	               ByteBuffer body,
+	               byte[] body,
 	               Consumer onFailure,
 	               boolean isSingleWay) {
-		this(requestId,source,destination,body,onFailure,null,isSingleWay);
+		this(source,destination,body,onFailure,null,isSingleWay);
 	}
 
-	public Message(long requestId,
-	               RPCAddress source,
+	public Message(RPCAddress source,
 	               RPCAddress destination,
-	               ByteBuffer body){
-		this(requestId,source,destination,body,null,null,false);
+	               byte[] body){
+		this(source,destination,body,null,null,false);
 	}
 
-	public Message(long requestId,
-	               RPCAddress source,
+	public Message(RPCAddress source,
 	               RPCAddress destination,
-	               ByteBuffer body,
+	               byte[] body,
 	               boolean isSingleWay){
-		this(requestId,source,destination,body,null,null,isSingleWay);
+		this(source,destination,body,null,null,isSingleWay);
 	}
 
-	public Message(long requestId,
-	               RPCAddress source,
+	public Message(RPCAddress source,
 	               RPCAddress destination){
-		this(requestId,source,destination,null,null,null,false);
+		this(source,destination,null,null,null,false);
 	}
 
-	public Message(long requestId,
-	               RPCAddress source,
+	public Message(RPCAddress source,
 	               RPCAddress destination,
 	               boolean isSingleWay){
-		this(requestId,source,destination,null,null,null,isSingleWay);
+		this(source,destination,null,null,null,isSingleWay);
 	}
 
-	public Message(long requestId,
-	               RPCAddress destination){
-		this(requestId,null,destination,null,null,null,false);
+	public Message(RPCAddress destination){
+		this(null,destination,null,null,null,false);
 		this.source=localRPCAddress;
 	}
 
-	public Message(long requestId,
-	               RPCAddress destination,
+	public Message(RPCAddress destination,
 	               boolean isSingleWay){
-		this(requestId,null,destination,null,null,null,isSingleWay);
+		this(null,destination,null,null,null,isSingleWay);
 		this.source=localRPCAddress;
+	}
+
+	@Override
+	public String toString() {
+		return new StringBuffer()
+				.append("message Info\n")
+				.append("=========================\n")
+				.append("source:  "+source.toString()+"\n")
+				.append("destination:  "+destination.toString()+"\n")
+				.append("is singleway:  "+isSingleWay+"\n")
+				.append("text: "+body.toString())
+				.toString();
 	}
 }

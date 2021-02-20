@@ -1,7 +1,7 @@
 package com.github.canteen.security.kerberos;
 
 /**
- * 授权服务器
+ * 认证服务器
  */
 public class AuthServer {
 

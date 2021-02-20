@@ -1,14 +1,14 @@
 package com.github.canteen.handler;
 
 import com.github.canteen.domain.UserInfo;
-import com.github.canteen.log.Logging;
-import com.github.canteen.log.LoggingFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 
 public class HQLHandler extends JDBCHandler {
 
-	public static final Logging logger= LoggingFactory.create();
+	public static final Logger logger= LoggerFactory.getLogger(HQLHandler.class);
 
 	public boolean checkAccess(UserInfo userInfo) {
 		return false;

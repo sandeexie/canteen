@@ -1,4 +1,4 @@
-package com.github.canteen.rpc.message;
+package com.github.canteen.network.message;
 
 /**
  * 设置PRC消息的状态用于进行生命周期控制,并进行消息状态的追踪

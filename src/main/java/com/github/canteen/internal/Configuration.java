@@ -71,6 +71,8 @@ public class Configuration {
 	public static final String MESSAGELOOP_THREAD_POOL_KEEPALIVE_TIME="messageloop.thread.pool.keepalive.time";
 
 	public static final String MESSAGELOOP_THREAD_POOL_CORE_SIZE="messageloop.thread.pool.core.size";
+
+	public static final String HTTP_AGGREGATOR_MAX_ZISE="http.aggregator.max.size";
 	/*================================================================*/
 
 	// RPC默认最大连接次数
@@ -141,4 +143,6 @@ public class Configuration {
 	public static int DEFAULT_MESSAGELOOP_THREAD_POOL_KEEPALIVE_TIME=1000;
 
 	public static int DEFAULT_MESSAGELOOP_THREAD_POOL_CORE_SIZE=8;
+
+	public static int DEFAULT_HTTP_AGGREGATOR_MAX_ZISE=1024*1024*4;
 }

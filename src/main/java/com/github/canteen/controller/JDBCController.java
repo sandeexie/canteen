@@ -2,8 +2,8 @@ package com.github.canteen.controller;
 
 import com.github.canteen.handler.*;
 import com.github.canteen.internal.ConfigReader;
-import com.github.canteen.log.Logging;
-import com.github.canteen.log.LoggingFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO 替换掉Spring系列对HTTP C/S模式的支持,这里支持HTTP请求即可,暂时不考虑HTTPS
@@ -12,7 +12,7 @@ public class JDBCController {
 
 	private static final ConfigReader configReader=ConfigReader.getReader();
 
-	private static final Logging logging= LoggingFactory.create();
+	private static final Logger logging= LoggerFactory.getLogger(JDBCController.class);
 
 	MySQLHandler mySQLHandler;
 
